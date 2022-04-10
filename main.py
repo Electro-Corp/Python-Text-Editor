@@ -46,9 +46,17 @@ class TextEditor:
     menubar.add_cascade(label="Font", menu=fileMenu)
     #code highlighting
     codeMenu = Menu(menubar)
-    fileMenu.add_command(label="[Python] Refresh Syntax Highlighting ",command=lambda: self.syntaxHighlight('Default'))
-    codeMenu.add_cascade(label="Syntax", menu=menubar)
+    codeMenu.add_command(label="[Python] Refresh Syntax Highlighting ",command=lambda: self.syntaxHighlight('Default'))
+    menubar.add_cascade(label="Syntax", menu=codeMenu)
+    #basic text editor stuff
+    editMenu = Menu(menubar)
+    editMenu.add_command(label="Bold",command=lambda: self.bold())
+    menubar.add_cascade(label="Edit", menu=editMenu)
+    #bold
+    self.box.tag_config("bt",font=(self.currentfont, "12", "bold"))
   #Change font
+  def bold(self):
+    self.box.tag_add("bt", "sel.first", "sel.last")
   def save(self):  
     b = self.saveas.get("1.0",'end-1c')
     try:

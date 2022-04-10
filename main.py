@@ -62,9 +62,10 @@ class TextEditor:
     try:
       extension = b.split(".",1)[1]
     except IndexError:
-      b = b+".tex"
-      messagebox.showerror(title="No extension", message="Automaticly Saving with .tex")
-    if (extension == "tex"):
+      b = b+".rbtf"
+      messagebox.showerror(title="No extension", message="Automaticly Saving with .rbtf")
+      extension = "rbtf"
+    if (extension == "rbtf"):
       try:
         open(b,'x')
       except FileExistsError:  
@@ -86,7 +87,7 @@ class TextEditor:
   def read(self):
     b = self.saveas.get("1.0",'end-1c')
     filename, extensio = os.path.splitext(b)
-    if (extensio == ".tex"):
+    if (extensio == ".rbtf"):
       try:
         with open(b,'r') as f:
           try:

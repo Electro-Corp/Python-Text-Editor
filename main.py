@@ -7,6 +7,6 @@ import os
 import texteditor as t    
 root = tk.Tk()
 root.title("Text Editor")
-root.geometry("350x400")
+root.geometry("350x300")
 app = t.TextEditor(root)
 tk.mainloop()

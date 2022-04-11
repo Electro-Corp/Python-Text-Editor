@@ -2,7 +2,7 @@
 Python Text Editor<br>
 Currently , `main.py`, for the tk window init, and `texteditor.py`, for the real app.<br>
 Should work on any system that supports python, as it only uses built in librarys<br>
-![image](https://user-images.githubusercontent.com/66333305/162762358-a16d7103-b968-4829-9977-c4f1fb8f6e3c.png)
+![image](https://user-images.githubusercontent.com/66333305/162791503-e145fab5-c71b-46d8-a300-ac516986ac0e.png)
 
 
 # Built in File-Format, .rbtf (really bad text format)

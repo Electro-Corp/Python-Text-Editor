@@ -4,13 +4,27 @@ from tkinter import Tk, Frame, Menu
 import tkinter.font as font
 from tkinter import *
 import os
-syntax = {
+python = {
   "print" : "purple",
   "if": "orange",
   "True": "blue",
   "else": "orange",
-  "False": "blue"
+  "False": "blue",
+  "print(" : "purple",
+  "if": "orange",
+  "True:": "blue",
+  "else:": "orange",
+  "False:": "blue"
 }
+cpp = {
+  "if":"blue",
+  "include":"blue",
+  "cout":"red",
+  "if(":"blue",
+  "#include":"blue",
+  "std::cout":"red"
+}
+remove = [':','{',"''"]
 class TextEditor:
   def __init__(self,root):
     #info needed 
@@ -24,8 +38,10 @@ class TextEditor:
  
     self.box = tk.Text(root,height=10,width=30,yscrollcommand=self.scrollbar.set)  
     self.box.configure(font = 'Arial')
-    for key in syntax:
-      self.box.tag_configure(key, background="white", foreground=syntax[key])
+    for key in python:
+      self.box.tag_configure(key, background="white", foreground=python[key])
+    for key in cpp:
+      self.box.tag_configure(key, background="white", foreground=cpp[key])
     self.scrollbar.config(command=self.box.yview)
     self.scrollbar.pack(side=RIGHT, fill=Y)
     self.box.pack()
@@ -52,7 +68,8 @@ class TextEditor:
     menubar.add_cascade(label="Font", menu=fileMenu)
     #code highlighting
     codeMenu = Menu(menubar)
-    codeMenu.add_command(label="[Python] Refresh Syntax Highlighting ",command=lambda: self.syntaxHighlight('Default'))
+    codeMenu.add_command(label="[Python] Refresh Syntax Highlighting ",command=lambda: self.syntaxHighlight('Python'))
+    codeMenu.add_command(label="[C++] Refresh Syntax Highlighting ",command=lambda: self.syntaxHighlight('C++'))
     menubar.add_cascade(label="Syntax", menu=codeMenu)
     #basic text editor stuff
     editMenu = Menu(menubar)
@@ -60,6 +77,11 @@ class TextEditor:
     menubar.add_cascade(label="Edit", menu=editMenu)
     #bold
     self.box.tag_config("bt",font=(self.currentfont, "12", "bold"))
+    #compile
+    compileMenu = Menu(menubar)
+    compileMenu.add_command(label="Compile C++",command=lambda: self.compilecpp())
+    compileMenu.add_command(label="Compile Python",command=lambda: self.compilepython())
+    menubar.add_cascade(label="Compile", menu=compileMenu)
     #self.box.tag_config("new",font=(self.currentfont, "14", "default"))
   #Change font
   def bold(self):
@@ -139,12 +161,17 @@ class TextEditor:
     thefont = font.Font(family=thecurrentfont)
     self.box.configure(font = thefont)
     self.currentfont = thecurrentfont
-  def syntaxHighlight(self,word):
+  def syntaxHighlight(self,language):
     lines = self.box.get("1.0",'end-1c')
-    newlines = lines.split()  
+    newlines = lines.split()
+    syntax = []
     #word = self.box.selection_get()
     pos_start = "1.0"
     print(newlines)
+    if language == "Python":
+      syntax = python
+    elif language == "C++":
+      syntax = cpp 
     for line in newlines:
       word = line
       offset = '+%dc' % len(line)
@@ -168,4 +195,20 @@ class TextEditor:
         self.box.tag_add(word, pos_start, pos_end)
     #thecolor = color.Color(rncolor)
     #self.box.configure = (color = thecolor)
+  def compilecpp(self):
+    self.save()
+    d = self.saveas.get("1.0",'end-1c')
+    o = os.popen('g++ '+d).read()
+    #o = os.system('g++ '+d).read
+    messagebox.showerror(title="G++ output", message=o)
+    #print(output)
+    output = os.popen('./a.out').read()
+    messagebox.showerror(title="Compile Output", message=output)
+    print(output)
+  def compilepython(self):
+    self.save()
+    d = self.saveas.get("1.0",'end-1c')
+    o = os.popen('python3 '+d).read()
+    messagebox.showerror(title="Compile Output", message=o)
+    
     

@@ -15,3 +15,6 @@ TEXT
 (text for file here)
 ```
 Will increase in complexity as time goes on..
+
+# Built in C++ and Python Compiling
+As long as your computer has G++ and Python3

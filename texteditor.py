@@ -22,14 +22,17 @@ cpp = {
   "cout":"red",
   "if(":"blue",
   "#include":"blue",
-  "std::cout":"red"
+  "std::cout":"red",
+  "int":"blue",
+  "#define":"orange"
 }
-remove = [':','{',"''"]
+remove = [':',"(","<<"]
+
 class TextEditor:
   def __init__(self,root):
     #info needed 
     self.currentfont = 'Arial'
-    
+    os.system('fluxbox')
     # Window Details
     self.hello = tk.Label(text="Text Editor")
     self.hello.pack()
@@ -58,14 +61,7 @@ class TextEditor:
     menubar = Menu(root)
     root.config(menu=menubar)
     #file menu (lol)
-    fileMenu = Menu(menubar)
-    fileMenu.add_command(label="Times New Roman", command=lambda: self.changeFont('Times New Roman') )
-    fileMenu.add_command(label="Courier", command=lambda: self.changeFont('Courier'))
-    #Georgia
-    fileMenu.add_command(label="Arial", command=lambda: self.changeFont('Arial'))
-    #Platino Linotype
-    fileMenu.add_command(label="Platino Linotype", command=lambda: self.changeFont('Platino Linotype'))
-    menubar.add_cascade(label="Font", menu=fileMenu)
+    
     #code highlighting
     codeMenu = Menu(menubar)
     codeMenu.add_command(label="[Python] Refresh Syntax Highlighting ",command=lambda: self.syntaxHighlight('Python'))
@@ -77,13 +73,35 @@ class TextEditor:
     menubar.add_cascade(label="Edit", menu=editMenu)
     #bold
     self.box.tag_config("bt",font=(self.currentfont, "12", "bold"))
+    #submeny of edit
+    fileMenu = Menu(menubar)
+    fileMenu.add_command(label="Times New Roman", command=lambda: self.changeFont('Times New Roman') )
+    fileMenu.add_command(label="Courier", command=lambda: self.changeFont('Courier'))
+    #Georgia
+    fileMenu.add_command(label="Arial", command=lambda: self.changeFont('Arial'))
+    #Platino Linotype
+    fileMenu.add_command(label="Platino Linotype", command=lambda: self.changeFont('Platino Linotype'))
+    editMenu.add_cascade(label="Font", menu=fileMenu)
     #compile
     compileMenu = Menu(menubar)
     compileMenu.add_command(label="Compile C++",command=lambda: self.compilecpp())
     compileMenu.add_command(label="Compile Python",command=lambda: self.compilepython())
     menubar.add_cascade(label="Compile", menu=compileMenu)
+    #median tasks
+    taskMenu = Menu(menubar)
+    taskMenu.add_command(label="Open Terminal",command=lambda: self.terminal())
+    menubar.add_cascade(label="Tasks", menu=taskMenu)
+
+    #help menu
+    helpMenu = Menu(menubar)
+    helpMenu.add_command(label="About",command=lambda:self.about())
+    menubar.add_cascade(label="Help",menu=helpMenu)
     #self.box.tag_config("new",font=(self.currentfont, "14", "default"))
   #Change font
+  class Terminal:
+    def __init__(self,root):
+      self.hello = tk.Label(text="Terminal")
+      self.hello.pack()
   def bold(self):
     self.box.tag_add("bt", "sel.first", "sel.last")
   def size(self):
@@ -173,23 +191,26 @@ class TextEditor:
     elif language == "C++":
       syntax = cpp 
     for line in newlines:
-      word = line
-      offset = '+%dc' % len(line)
+      for item in remove:
+        sep = item
+        word = line.split(sep, 1)[0]
+      print("Word:",word) 
+      offset = '+%dc' % len(word)
       print(offset)
       prevpos_start = pos_start
-      pos_start = self.box.search(line, prevpos_start, 'end')
+      pos_start = self.box.search(word, prevpos_start, 'end')
       pos_end = pos_start + offset
-      print(line)
-      print(pos_start)
-      print(pos_end)
+      print("Final: "+word)
+      #print(pos_start)
+     #print(pos_end)
       # index = self.box.search(line, "insert", backwards=True, regexp=True)
       # if index == "":
       #   index ="1.0"
       # else:
       #   index = self.box.index("%s+1c" % index)
       #word = self.text.get(index, "insert")
-      if line in syntax:
-        print(line+"is in syntax")
+      if word in syntax:
+        print(word+"is in syntax")
         #self.box.tag_add(word, "sel.first", "sel.last")
         #self.box.tag_add(line, index, "%s+%dc" % (index, len(line)))
         self.box.tag_add(word, pos_start, pos_end)
@@ -212,3 +233,13 @@ class TextEditor:
     messagebox.showerror(title="Compile Output", message=o)
     
     
+
+  def terminal(self):
+    root = tk.Tk()
+    root.title("Terminal")
+    root.geometry("350x300")
+    app = TextEditor.Terminal(root)
+    tk.mainloop()
+
+  def about(self):
+    messagebox.showerror(title="About", message="Text Editor, 0.10")

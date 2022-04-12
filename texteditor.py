@@ -14,7 +14,8 @@ python = {
   "if": "orange",
   "True:": "blue",
   "else:": "orange",
-  "False:": "blue"
+  "False:": "blue",
+  "import":"blue"
 }
 cpp = {
   "if":"blue",
@@ -24,15 +25,42 @@ cpp = {
   "#include":"blue",
   "std::cout":"red",
   "int":"blue",
-  "#define":"orange"
+  "#define":"orange",
+  "float": "blue",
+  "unsigned":"green",
+  "signed": "green",
+  "using":"blue",
+  "namespace": "blue",
+  '""':"green",
+  "=":"red",
+  "<<":"red"
 }
 remove = [':',"(","<<"]
-
+class Terminal:
+  def __init__(self,d):
+    self.fullout = []
+    self.bruh = tk.Label(d,text="Terminal")
+    self.bruh.pack()
+    self.output = tk.Text(d,height=10,width=30) 
+    self.d = tk.Text(d,height=3,width=10) 
+    self.c = tk.Button(d,command=lambda:self.send(),text="Send Command")
+    self.output.pack()
+    self.d.pack()
+    self.c.pack()
+  def send(self):
+    c = os.popen(self.d.get("1.0",'end-1c')).read()
+    self.fullout.append(c)
+    self.output.insert("1.0", c)
 class TextEditor:
   def __init__(self,root):
     #info needed 
     self.currentfont = 'Arial'
     os.system('fluxbox')
+    #
+    top = Frame(root)
+    bottom = Frame(root)
+    top.pack(side=TOP)
+    bottom.pack(side=BOTTOM, fill=BOTH, expand=True)
     # Window Details
     self.hello = tk.Label(text="Text Editor")
     self.hello.pack()
@@ -50,13 +78,13 @@ class TextEditor:
     self.box.pack()
     #Save as textbox
     self.saveas = tk.Text(root,height=1,width=10)
-    self.saveas.pack()
+    self.saveas.pack(in_=bottom,side=LEFT)
 
     #buttons
     self.button = tk.Button(command=self.save,text="Save")
-    self.button.pack()
+    self.button.pack(in_=bottom,side=LEFT)
     self.open = tk.Button(command=self.read,text="Open")
-    self.open.pack()
+    self.open.pack(in_=bottom,side=LEFT)
     #create toolbar thing
     menubar = Menu(root)
     root.config(menu=menubar)
@@ -98,10 +126,6 @@ class TextEditor:
     menubar.add_cascade(label="Help",menu=helpMenu)
     #self.box.tag_config("new",font=(self.currentfont, "14", "default"))
   #Change font
-  class Terminal:
-    def __init__(self,root):
-      self.hello = tk.Label(text="Terminal")
-      self.hello.pack()
   def bold(self):
     self.box.tag_add("bt", "sel.first", "sel.last")
   def size(self):
@@ -221,7 +245,7 @@ class TextEditor:
     d = self.saveas.get("1.0",'end-1c')
     o = os.popen('g++ '+d).read()
     #o = os.system('g++ '+d).read
-    messagebox.showerror(title="G++ output", message=o)
+    messagebox.showerror(title="G++ output", message="Compilation Finished. Press OK")
     #print(output)
     output = os.popen('./a.out').read()
     messagebox.showerror(title="Compile Output", message=output)
@@ -231,14 +255,11 @@ class TextEditor:
     d = self.saveas.get("1.0",'end-1c')
     o = os.popen('python3 '+d).read()
     messagebox.showerror(title="Compile Output", message=o)
-    
-    
-
   def terminal(self):
-    root = tk.Tk()
-    root.title("Terminal")
-    root.geometry("350x300")
-    app = TextEditor.Terminal(root)
+    e = tk.Tk()
+    e.title("Terminal")
+    e.geometry("350x300")
+    app = Terminal(e)
     tk.mainloop()
 
   def about(self):
